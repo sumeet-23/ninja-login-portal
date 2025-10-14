@@ -109,6 +109,9 @@ const Index = () => {
         // In production: redirect to dashboard or handle the response data
         // window.location.href = '/dashboard';
         console.log('Login response:', response.data);
+        
+        // Log API documentation reference for developers
+        console.log('📚 API Documentation: See .cursor/commands/login-api.md for complete API reference');
       } else {
         setMessage({ type: "error", text: response.message || "Login failed. Please try again." });
       }
