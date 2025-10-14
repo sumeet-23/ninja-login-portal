@@ -146,7 +146,7 @@ const Index = () => {
                   id="username"
                   type="text"
                   autoComplete="username"
-                  placeholder="e.g. john@farm.co or +91 98xxxx"
+                  placeholder="Email or phone number"
                   value={username}
                   onChange={(e) => {
                     setUsername(e.target.value);
@@ -243,10 +243,6 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Demo hint */}
-          <div className="mt-6 text-center text-sm text-muted-foreground">
-            <p className="italic">Demo: Use username with "ninja" or ending with "@farm.co"</p>
-          </div>
         </div>
       </div>
     </div>
