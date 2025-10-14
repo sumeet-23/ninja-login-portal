@@ -1,9 +1,10 @@
-import { useState } from "react";
-import { Eye, EyeOff, CheckCircle2, AlertCircle } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Eye, EyeOff, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { loginUser, ApiError, isOnline, handleOfflineError } from "@/lib/api";
 
 const Index = () => {
   const [username, setUsername] = useState("");
@@ -14,14 +15,49 @@ const Index = () => {
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const validateUsername = (value: string): string | undefined => {
-    if (!value) return "Username is required";
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const phoneRegex = /^\+?[0-9]{10,}$/;
-    if (!emailRegex.test(value) && !phoneRegex.test(value.replace(/\s/g, ""))) {
-      return "Enter a valid email or phone number";
+  // Load remembered username on component mount
+  useEffect(() => {
+    const rememberedUser = localStorage.getItem('rememberedUser');
+    if (rememberedUser) {
+      setUsername(rememberedUser);
+      setRememberMe(true);
     }
+  }, []);
+
+  const validateUsername = (value: string): string | undefined => {
+    if (!value) return "Employee ID is required";
+    
+    // Check if username already starts with NC
+    const hasNCPrefix = value.startsWith('NC');
+    const usernameWithoutPrefix = hasNCPrefix ? value.substring(2) : value;
+    
+    // Validate the part after NC (or the whole username if no NC prefix)
+    const alphanumericRegex = /^[a-zA-Z0-9]+$/;
+    if (!alphanumericRegex.test(usernameWithoutPrefix)) {
+      return "Employee ID must contain only letters and numbers";
+    }
+    
+    // Check minimum length (including NC prefix if present)
+    const minLength = hasNCPrefix ? 5 : 3; // NC + 3 chars minimum
+    if (value.length < minLength) {
+      return hasNCPrefix 
+        ? "Employee ID must be at least 5 characters long (NC + 3 characters)"
+        : "Employee ID must be at least 3 characters long";
+    }
+    
     return undefined;
+  };
+
+  // Function to normalize username with NC prefix
+  const normalizeUsername = (value: string): string => {
+    if (!value) return value;
+    
+    // If username doesn't start with NC, add it
+    if (!value.startsWith('NC')) {
+      return `NC${value}`;
+    }
+    
+    return value;
   };
 
   const validatePassword = (value: string): string | undefined => {
@@ -49,21 +85,59 @@ const Index = () => {
     setIsSubmitting(true);
     setMessage(null);
 
-    // Simulate API call - Replace this with: fetch('/api/login', { method: 'POST', body: JSON.stringify({ username, password }) })
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Demo logic: success if username contains "ninja" or ends with "@farm.co"
-    const isNinjaUser = username.toLowerCase().includes("ninja");
-    const isFarmEmail = username.toLowerCase().endsWith("@farm.co");
-    
-    if (isNinjaUser || isFarmEmail) {
-      setMessage({ type: "success", text: "Login successful! Redirecting..." });
-      // In production: window.location.href = '/dashboard';
-    } else {
-      setMessage({ type: "error", text: "Invalid credentials. Try a username with 'ninja' or ending with @farm.co" });
+    try {
+      // Check if user is online
+      if (!isOnline()) {
+        throw handleOfflineError();
+      }
+
+      // Call the actual API with normalized username
+      const normalizedUsername = normalizeUsername(username);
+      const response = await loginUser({
+        userName: normalizedUsername,
+        password: password
+      });
+
+      if (response.success) {
+        setMessage({ type: "success", text: "Login successful! Redirecting..." });
+        
+        // Store login state if remember me is checked
+        if (rememberMe) {
+          localStorage.setItem('rememberedUser', username);
+        }
+        
+        // In production: redirect to dashboard or handle the response data
+        // window.location.href = '/dashboard';
+        console.log('Login response:', response.data);
+      } else {
+        setMessage({ type: "error", text: response.message || "Login failed. Please try again." });
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      
+      if (error instanceof ApiError) {
+        let errorMessage = error.message;
+        
+        // Handle specific error cases
+        if (error.status === 401) {
+          errorMessage = "Invalid username or password. Please check your credentials.";
+        } else if (error.status === 403) {
+          errorMessage = "Access denied. Please contact support.";
+        } else if (error.status === 500) {
+          errorMessage = "Server error. Please try again later.";
+        } else if (error.code === 'NETWORK_ERROR') {
+          errorMessage = "Unable to connect to the server. Please check your internet connection.";
+        } else if (error.code === 'OFFLINE') {
+          errorMessage = "You are currently offline. Please check your internet connection.";
+        }
+        
+        setMessage({ type: "error", text: errorMessage });
+      } else {
+        setMessage({ type: "error", text: "An unexpected error occurred. Please try again." });
+      }
+    } finally {
+      setIsSubmitting(false);
     }
-    
-    setIsSubmitting(false);
   };
 
   const isFormValid = username && password && !errors.username && !errors.password;
@@ -140,17 +214,18 @@ const Index = () => {
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
                 <Label htmlFor="username" className="text-card-foreground">
-                  Username
+                  Employee ID
                 </Label>
                 <Input
                   id="username"
                   type="text"
                   autoComplete="username"
-                  placeholder="Email or phone number"
+                  placeholder="Enter Employee ID (NC will be added automatically)"
                   value={username}
                   onChange={(e) => {
-                    setUsername(e.target.value);
-                    setErrors({ ...errors, username: validateUsername(e.target.value) });
+                    const value = e.target.value;
+                    setUsername(value);
+                    setErrors({ ...errors, username: validateUsername(value) });
                   }}
                   onBlur={(e) => setErrors({ ...errors, username: validateUsername(e.target.value) })}
                   className={`mt-1.5 ${errors.username ? "border-destructive focus-visible:ring-destructive" : ""}`}
@@ -229,7 +304,14 @@ const Index = () => {
                 className="w-full"
                 disabled={!isFormValid || isSubmitting}
               >
-                {isSubmitting ? "Logging in..." : "Log in"}
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Logging in...
+                  </>
+                ) : (
+                  "Log in"
+                )}
               </Button>
             </form>
 
