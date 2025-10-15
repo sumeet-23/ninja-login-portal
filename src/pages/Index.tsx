@@ -5,8 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { loginUser, ApiError, isOnline, handleOfflineError } from "@/lib/api";
+import { useTranslation } from "react-i18next";
 
 const Index = () => {
+  const { t } = useTranslation();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -25,7 +27,7 @@ const Index = () => {
   }, []);
 
   const validateUsername = (value: string): string | undefined => {
-    if (!value) return "Employee ID is required";
+    if (!value) return t('validation.employeeIdRequired');
     
     // Check if username already starts with NC
     const hasNCPrefix = value.startsWith('NC');
@@ -34,15 +36,15 @@ const Index = () => {
     // Validate the part after NC (or the whole username if no NC prefix)
     const alphanumericRegex = /^[a-zA-Z0-9]+$/;
     if (!alphanumericRegex.test(usernameWithoutPrefix)) {
-      return "Employee ID must contain only letters and numbers";
+      return t('validation.employeeIdAlphanumeric');
     }
     
     // Check minimum length (including NC prefix if present)
     const minLength = hasNCPrefix ? 5 : 3; // NC + 3 chars minimum
     if (value.length < minLength) {
       return hasNCPrefix 
-        ? "Employee ID must be at least 5 characters long (NC + 3 characters)"
-        : "Employee ID must be at least 3 characters long";
+        ? t('validation.employeeIdMinLengthWithPrefix')
+        : t('validation.employeeIdMinLength');
     }
     
     return undefined;
@@ -61,8 +63,8 @@ const Index = () => {
   };
 
   const validatePassword = (value: string): string | undefined => {
-    if (!value) return "Password is required";
-    if (value.length < 6) return "Password must be at least 6 characters";
+    if (!value) return t('validation.passwordRequired');
+    if (value.length < 6) return t('validation.passwordMinLength');
     return undefined;
   };
 
@@ -78,7 +80,7 @@ const Index = () => {
     });
 
     if (usernameError || passwordError) {
-      setMessage({ type: "error", text: "Please fix the errors below" });
+      setMessage({ type: "error", text: t('validation.fixErrors') });
       return;
     }
 
@@ -99,7 +101,7 @@ const Index = () => {
       });
 
       if (response.success) {
-        setMessage({ type: "success", text: "Login successful! Redirecting..." });
+        setMessage({ type: "success", text: t('messages.loginSuccess') });
         
         // Store login state if remember me is checked
         if (rememberMe) {
@@ -113,7 +115,7 @@ const Index = () => {
         // Log API documentation reference for developers
         console.log('📚 API Documentation: See .cursor/commands/login-api.md for complete API reference');
       } else {
-        setMessage({ type: "error", text: response.message || "Login failed. Please try again." });
+        setMessage({ type: "error", text: response.message || t('messages.loginFailed') });
       }
     } catch (error) {
       console.error('Login error:', error);
@@ -123,20 +125,20 @@ const Index = () => {
         
         // Handle specific error cases
         if (error.status === 401) {
-          errorMessage = "Invalid username or password. Please check your credentials.";
+          errorMessage = t('messages.invalidCredentials');
         } else if (error.status === 403) {
-          errorMessage = "Access denied. Please contact support.";
+          errorMessage = t('messages.accessDenied');
         } else if (error.status === 500) {
-          errorMessage = "Server error. Please try again later.";
+          errorMessage = t('messages.serverError');
         } else if (error.code === 'NETWORK_ERROR') {
-          errorMessage = "Unable to connect to the server. Please check your internet connection.";
+          errorMessage = t('messages.networkError');
         } else if (error.code === 'OFFLINE') {
-          errorMessage = "You are currently offline. Please check your internet connection.";
+          errorMessage = t('messages.offline');
         }
         
         setMessage({ type: "error", text: errorMessage });
       } else {
-        setMessage({ type: "error", text: "An unexpected error occurred. Please try again." });
+        setMessage({ type: "error", text: t('messages.unexpectedError') });
       }
     } finally {
       setIsSubmitting(false);
@@ -152,10 +154,10 @@ const Index = () => {
         <div className="max-w-lg">
           <div className="mb-8">
             <h1 className="text-5xl font-bold text-foreground mb-4">
-              Welcome to Ninjacart
+              {t('hero.title')}
             </h1>
             <p className="text-xl text-muted-foreground">
-              Connecting farms to businesses with smart technology
+              {t('hero.subtitle')}
             </p>
           </div>
           
@@ -163,15 +165,15 @@ const Index = () => {
             <div className="flex items-start gap-3">
               <CheckCircle2 className="w-6 h-6 text-primary mt-1 flex-shrink-0" />
               <div>
-                <h3 className="text-lg font-semibold text-foreground">Fresh Produce Direct</h3>
-                <p className="text-muted-foreground">Get farm-fresh products delivered to your business daily</p>
+                <h3 className="text-lg font-semibold text-foreground">{t('hero.feature1Title')}</h3>
+                <p className="text-muted-foreground">{t('hero.feature1Desc')}</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
               <CheckCircle2 className="w-6 h-6 text-primary mt-1 flex-shrink-0" />
               <div>
-                <h3 className="text-lg font-semibold text-foreground">Smart Logistics</h3>
-                <p className="text-muted-foreground">AI-powered supply chain ensuring quality and timely delivery</p>
+                <h3 className="text-lg font-semibold text-foreground">{t('hero.feature2Title')}</h3>
+                <p className="text-muted-foreground">{t('hero.feature2Desc')}</p>
               </div>
             </div>
           </div>
@@ -189,8 +191,8 @@ const Index = () => {
                   <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
                 </svg>
               </div>
-              <h2 className="text-2xl font-bold text-card-foreground">Log in to your account</h2>
-              <p className="text-muted-foreground mt-2">Enter your credentials to continue</p>
+              <h2 className="text-2xl font-bold text-card-foreground">{t('login.title')}</h2>
+              <p className="text-muted-foreground mt-2">{t('login.subtitle')}</p>
             </div>
 
             {/* Message Area */}
@@ -217,13 +219,13 @@ const Index = () => {
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
                 <Label htmlFor="username" className="text-card-foreground">
-                  Employee ID
+                  {t('login.employeeId')}
                 </Label>
                 <Input
                   id="username"
                   type="text"
                   autoComplete="username"
-                  placeholder="Enter Employee ID (NC will be added automatically)"
+                  placeholder={t('login.employeeIdPlaceholder')}
                   value={username}
                   onChange={(e) => {
                     const value = e.target.value;
@@ -245,14 +247,14 @@ const Index = () => {
 
               <div>
                 <Label htmlFor="password" className="text-card-foreground">
-                  Password
+                  {t('login.password')}
                 </Label>
                 <div className="relative mt-1.5">
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
                     autoComplete="current-password"
-                    placeholder="Enter your password"
+                    placeholder={t('login.passwordPlaceholder')}
                     value={password}
                     onChange={(e) => {
                       setPassword(e.target.value);
@@ -267,7 +269,7 @@ const Index = () => {
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors focus:outline-none focus:ring-2 focus:ring-ring rounded"
-                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    aria-label={showPassword ? t('login.hidePassword') : t('login.showPassword')}
                   >
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                   </button>
@@ -291,14 +293,14 @@ const Index = () => {
                     htmlFor="remember"
                     className="text-sm text-muted-foreground cursor-pointer"
                   >
-                    Remember me
+                    {t('login.rememberMe')}
                   </Label>
                 </div>
                 <a
                   href="#forgot"
                   className="text-sm text-primary hover:underline focus:outline-none focus:ring-2 focus:ring-ring rounded"
                 >
-                  Forgot password?
+                  {t('login.forgotPassword')}
                 </a>
               </div>
 
@@ -310,19 +312,19 @@ const Index = () => {
                 {isSubmitting ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Logging in...
+                    {t('login.loggingIn')}
                   </>
                 ) : (
-                  "Log in"
+                  t('login.loginButton')
                 )}
               </Button>
             </form>
 
             <div className="mt-6 text-center">
               <p className="text-sm text-muted-foreground">
-                Don't have an account?{" "}
+                {t('login.noAccount')}{" "}
                 <a href="#signup" className="text-primary hover:underline focus:outline-none focus:ring-2 focus:ring-ring rounded">
-                  Sign up
+                  {t('login.signUp')}
                 </a>
               </p>
             </div>

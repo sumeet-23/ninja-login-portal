@@ -1,0 +1,55 @@
+{
+  "login": {
+    "title": "Entre na sua conta",
+    "subtitle": "Digite suas credenciais para continuar",
+    "employeeId": "ID do Funcionário",
+    "employeeIdPlaceholder": "Digite o ID do Funcionário (NC será adicionado automaticamente)",
+    "password": "Senha",
+    "passwordPlaceholder": "Digite sua senha",
+    "rememberMe": "Lembrar de mim",
+    "forgotPassword": "Esqueceu a senha?",
+    "loginButton": "Entrar",
+    "loggingIn": "Entrando...",
+    "signUp": "Cadastrar",
+    "noAccount": "Não tem uma conta?",
+    "showPassword": "Mostrar senha",
+    "hidePassword": "Ocultar senha"
+  },
+  "hero": {
+    "title": "Bem-vindo ao Ninjacart",
+    "subtitle": "Conectando fazendas a empresas com tecnologia inteligente",
+    "feature1Title": "Produtos Frescos Diretos",
+    "feature1Desc": "Receba produtos frescos da fazenda entregues ao seu negócio diariamente",
+    "feature2Title": "Logística Inteligente",
+    "feature2Desc": "Cadeia de suprimentos alimentada por IA garantindo qualidade e entrega pontual"
+  },
+  "validation": {
+    "employeeIdRequired": "ID do funcionário é obrigatório",
+    "employeeIdAlphanumeric": "ID do funcionário deve conter apenas letras e números",
+    "employeeIdMinLengthWithPrefix": "ID do funcionário deve ter pelo menos 5 caracteres (NC + 3 caracteres)",
+    "employeeIdMinLength": "ID do funcionário deve ter pelo menos 3 caracteres",
+    "passwordRequired": "Senha é obrigatória",
+    "passwordMinLength": "A senha deve ter pelo menos 6 caracteres",
+    "fixErrors": "Por favor, corrija os erros abaixo"
+  },
+  "messages": {
+    "loginSuccess": "Login bem-sucedido! Redirecionando...",
+    "loginFailed": "Falha no login. Por favor, tente novamente.",
+    "invalidCredentials": "Nome de usuário ou senha inválidos. Por favor, verifique suas credenciais.",
+    "accessDenied": "Acesso negado. Entre em contato com o suporte.",
+    "serverError": "Erro no servidor. Por favor, tente novamente mais tarde.",
+    "networkError": "Não foi possível conectar ao servidor. Por favor, verifique sua conexão com a internet.",
+    "offline": "Você está offline no momento. Por favor, verifique sua conexão com a internet.",
+    "unexpectedError": "Ocorreu um erro inesperado. Por favor, tente novamente."
+  },
+  "notFound": {
+    "title": "404 - Página Não Encontrada",
+    "message": "A página que você está procurando não existe.",
+    "backHome": "Voltar ao Início"
+  },
+  "language": {
+    "english": "Inglês",
+    "portuguese": "Português",
+    "selectLanguage": "Selecionar Idioma"
+  }
+}
