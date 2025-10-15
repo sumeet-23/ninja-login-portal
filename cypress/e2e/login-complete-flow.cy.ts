@@ -1,4 +1,6 @@
 describe('Complete Login Flow Integration', () => {
+  // Note: Tests use htmlFor attributes (#username, #password) instead of text content
+  // This ensures tests remain stable even if UI labels change (e.g., "Username" → "Employee ID")
   beforeEach(() => {
     cy.visit('/login')
     cy.clearStorage()
