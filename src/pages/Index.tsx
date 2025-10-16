@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { loginUser, ApiError, isOnline, handleOfflineError } from "@/lib/api";
+import { adminLoginApi, AdminRequest } from "@/lib/api/Admin";
 import { useTranslation } from "react-i18next";
 
 const Index = () => {
@@ -93,14 +94,19 @@ const Index = () => {
         throw handleOfflineError();
       }
 
-      // Call the actual API with normalized username
+      // Call the Admin API with normalized username
       const normalizedUsername = normalizeUsername(username);
-      const response = await loginUser({
+      console.log('Calling Admin API with:', { userName: normalizedUsername, password: '***' });
+      
+      const response = await adminLoginApi({
         userName: normalizedUsername,
         password: password
       });
 
-      if (response.success) {
+      console.log('Admin API response:', response);
+
+      // Admin API returns user data directly on success
+      if (response && response.id) {
         setMessage({ type: "success", text: t('messages.loginSuccess') });
         
         // Store login state if remember me is checked
@@ -108,22 +114,33 @@ const Index = () => {
           localStorage.setItem('rememberedUser', username);
         }
         
+        // Store admin user data
+        localStorage.setItem('adminUser', JSON.stringify({
+          id: response.id,
+          userName: response.userName,
+          email: response.email,
+          fullName: response.asgardUserPropertyMap?.fullName,
+          roles: response.roles,
+          rolesList: response.rolesList
+        }));
+        
         // In production: redirect to dashboard or handle the response data
         // window.location.href = '/dashboard';
-        console.log('Login response:', response.data);
+        console.log('Admin login response:', response);
         
-        // Log API documentation reference for developers
-        console.log('📚 API Documentation: See .cursor/commands/login-api.md for complete API reference');
+        // Log successful login
+        console.log('✅ Admin login successful');
       } else {
-        setMessage({ type: "error", text: response.message || t('messages.loginFailed') });
+        console.error('Invalid response structure:', response);
+        setMessage({ type: "error", text: t('messages.loginFailed') });
       }
     } catch (error) {
       console.error('Login error:', error);
       
+      let errorMessage = t('messages.unexpectedError');
+      
+      // Handle different error types
       if (error instanceof ApiError) {
-        let errorMessage = error.message;
-        
-        // Handle specific error cases
         if (error.status === 401) {
           errorMessage = t('messages.invalidCredentials');
         } else if (error.status === 403) {
@@ -134,12 +151,35 @@ const Index = () => {
           errorMessage = t('messages.networkError');
         } else if (error.code === 'OFFLINE') {
           errorMessage = t('messages.offline');
+        } else {
+          errorMessage = error.message;
         }
-        
-        setMessage({ type: "error", text: errorMessage });
-      } else {
-        setMessage({ type: "error", text: t('messages.unexpectedError') });
+      } else if (error instanceof Error) {
+        // Handle fetch errors and other errors
+        if (error.message.includes('Failed to fetch')) {
+          errorMessage = t('messages.networkError');
+        } else if (error.message.includes('HTTP error')) {
+          const statusMatch = error.message.match(/status: (\d+)/);
+          if (statusMatch) {
+            const status = parseInt(statusMatch[1]);
+            if (status === 401) {
+              errorMessage = t('messages.invalidCredentials');
+            } else if (status === 403) {
+              errorMessage = t('messages.accessDenied');
+            } else if (status === 500) {
+              errorMessage = t('messages.serverError');
+            } else {
+              errorMessage = `Server error (${status})`;
+            }
+          } else {
+            errorMessage = error.message;
+          }
+        } else {
+          errorMessage = error.message;
+        }
       }
+      
+      setMessage({ type: "error", text: errorMessage });
     } finally {
       setIsSubmitting(false);
     }

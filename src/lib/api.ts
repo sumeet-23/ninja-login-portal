@@ -1,5 +1,4 @@
 // API service for Ninjacart login
-// 📚 Complete API documentation: .cursor/commands/login-api.md
 
 export interface LoginRequest {
   userName: string;
@@ -36,7 +35,6 @@ export class ApiError extends Error {
 }
 
 // Login API function
-// 📚 See .cursor/commands/login-api.md for complete API documentation
 export const loginUser = async (credentials: LoginRequest): Promise<LoginResponse> => {
   try {
     const response = await fetch(`${API_BASE_URL}/user/login`, {

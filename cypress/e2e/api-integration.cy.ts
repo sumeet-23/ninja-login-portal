@@ -1,6 +1,7 @@
 describe('API Integration Tests', () => {
   // Note: Tests use htmlFor attributes (#username, #password) instead of text content
   // This ensures tests remain stable even if UI labels change (e.g., "Username" → "Employee ID")
+  // Tests support both English and Portuguese languages via i18n
   beforeEach(() => {
     cy.visit('/login')
     cy.clearStorage()
@@ -341,6 +342,48 @@ describe('API Integration Tests', () => {
       cy.get('[role="alert"]')
         .should('be.visible')
         .and('contain.text', 'Login successful! Redirecting...')
+    })
+  })
+
+  describe('Internationalization API Tests', () => {
+    it('should handle API errors in Portuguese', () => {
+      // Set language to Portuguese
+      cy.window().then((win) => {
+        win.localStorage.setItem('language', 'pt');
+      })
+      cy.reload()
+      
+      // Mock API error
+      cy.mockLoginApi('error')
+      
+      cy.get('#username').type('invaliduser')
+      cy.get('#password').type('wrongpassword')
+      cy.get('button[type="submit"]').click()
+      
+      cy.wait('@loginError')
+      cy.get('[role="alert"]')
+        .should('be.visible')
+        .and('contain.text', 'Nome de usuário ou senha inválidos')
+    })
+
+    it('should handle network errors in Portuguese', () => {
+      // Set language to Portuguese
+      cy.window().then((win) => {
+        win.localStorage.setItem('language', 'pt');
+      })
+      cy.reload()
+      
+      // Mock network error
+      cy.intercept('POST', 'http://direct.ninjacart.in:8080/user/login', { forceNetworkError: true }).as('networkError')
+      
+      cy.get('#username').type('NC23550')
+      cy.get('#password').type('123Ninja@')
+      cy.get('button[type="submit"]').click()
+      
+      cy.wait('@networkError')
+      cy.get('[role="alert"]')
+        .should('be.visible')
+        .and('contain.text', 'Não foi possível conectar ao servidor')
     })
   })
 })

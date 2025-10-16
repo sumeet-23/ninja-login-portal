@@ -1,6 +1,7 @@
 describe('Complete Login Flow Integration', () => {
   // Note: Tests use htmlFor attributes (#username, #password) instead of text content
   // This ensures tests remain stable even if UI labels change (e.g., "Username" → "Employee ID")
+  // Tests support both English and Portuguese languages via i18n
   beforeEach(() => {
     cy.visit('/login')
     cy.clearStorage()
@@ -188,6 +189,53 @@ describe('Complete Login Flow Integration', () => {
       cy.get('#username').type('invalid').blur()
       cy.get('#username-error').should('be.visible')
       cy.get('#username').should('have.attr', 'aria-describedby', 'username-error')
+    })
+  })
+
+  describe('Internationalization Complete Flow', () => {
+    it('should complete full login flow in Portuguese', () => {
+      // Set language to Portuguese
+      cy.window().then((win) => {
+        win.localStorage.setItem('language', 'pt');
+      })
+      cy.reload()
+      
+      // Mock successful API response
+      cy.mockLoginApi('success')
+      
+      // Verify Portuguese labels are displayed
+      cy.get('label[for="username"]').should('contain.text', 'ID do Funcionário')
+      cy.get('label[for="password"]').should('contain.text', 'Senha')
+      cy.get('label[for="remember"]').should('contain.text', 'Lembrar de mim')
+      
+      // Complete login flow
+      cy.get('#username').type('NC23550')
+      cy.get('#password').type('123Ninja@')
+      cy.get('button[type="submit"]').click()
+      
+      cy.wait('@loginSuccess')
+      cy.get('[role="alert"]')
+        .should('be.visible')
+        .and('contain.text', 'Login bem-sucedido! Redirecionando...')
+    })
+
+    it('should handle validation errors in Portuguese', () => {
+      // Set language to Portuguese
+      cy.window().then((win) => {
+        win.localStorage.setItem('language', 'pt');
+      })
+      cy.reload()
+      
+      // Test validation errors
+      cy.get('#username').type('ab').blur()
+      cy.get('#username-error')
+        .should('be.visible')
+        .and('contain.text', 'ID do funcionário deve ter pelo menos 3 caracteres')
+      
+      cy.get('#password').type('123').blur()
+      cy.get('#password-error')
+        .should('be.visible')
+        .and('contain.text', 'A senha deve ter pelo menos 6 caracteres')
     })
   })
 })

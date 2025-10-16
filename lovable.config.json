@@ -1,0 +1,8 @@
+{
+  "allowedSections": ["Filters", "Table", "Interactions", "Routing"],
+  "designSystem": "Shadcn",
+  "i18n": true,
+  "routingFile": "src/routes/index.tsx",
+  "componentFolder": "src/components",
+  "pageFolder": "src/pages"
+}

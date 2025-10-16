@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Test</title>
+</head>
+<body>
+    <h1>Admin API Test</h1>
+    <button onclick="testAPI()">Test Admin API</button>
+    <div id="result"></div>
+
+    <script>
+        async function testAPI() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Testing...';
+            
+            try {
+                const response = await fetch('http://direct.ninjacart.in:8080/user/login', {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Application': 'biFrost',
+                        'appVersion': '7',
+                        'Authorization': 'Basic',
+                        'Referer': 'http://www.direct.ninjacart.in/',
+                        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36',
+                        'Accept': 'application/json, text/plain, */*',
+                        'Content-Type': 'application/json;charset=UTF-8'
+                    },
+                    body: JSON.stringify({
+                        userName: 'NC23550',
+                        password: '123Ninja@'
+                    })
+                });
+                
+                console.log('Response status:', response.status);
+                console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                } else {
+                    const errorText = await response.text();
+                    resultDiv.innerHTML = 'Error: ' + response.status + ' - ' + errorText;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                resultDiv.innerHTML = 'Error: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>

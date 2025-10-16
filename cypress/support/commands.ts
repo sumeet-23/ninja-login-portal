@@ -36,6 +36,12 @@ declare global {
        * @example cy.mockLoginApi('success')
        */
       mockLoginApi(responseType: 'success' | 'error' | 'network-error'): Chainable<void>
+      
+      /**
+       * Custom command to mock Admin API responses
+       * @example cy.mockAdminApi('success')
+       */
+      mockAdminApi(responseType: 'success' | 'error' | 'network-error'): Chainable<void>
     }
   }
 }
@@ -60,6 +66,45 @@ Cypress.Commands.add('clearStorage', () => {
     win.localStorage.clear()
     win.sessionStorage.clear()
   })
+})
+
+// Custom command to mock Admin API
+Cypress.Commands.add('mockAdminApi', (responseType: 'success' | 'error' | 'network-error') => {
+  const baseUrl = 'http://direct.ninjacart.in:8080'
+  
+  switch (responseType) {
+    case 'success':
+      cy.intercept('POST', `${baseUrl}/user/login`, {
+        statusCode: 200,
+        body: {
+          id: 1759013,
+          employeeId: "NC23550",
+          userName: "NC23550",
+          email: "sumeetkumar@ninjacart.com",
+          roles: "TRADER",
+          rolesList: ["TRADER"],
+          asgardUserPropertyMap: {
+            fullName: "Sumeet Kumar",
+            city: { name: "Bengaluru" },
+            facility: { name: "Hoskote FC" }
+          }
+        }
+      }).as('adminLoginSuccess')
+      break
+      
+    case 'error':
+      cy.intercept('POST', `${baseUrl}/user/login`, {
+        statusCode: 401,
+        body: { error: 'Unauthorized' }
+      }).as('adminLoginError')
+      break
+      
+    case 'network-error':
+      cy.intercept('POST', `${baseUrl}/user/login`, {
+        forceNetworkError: true
+      }).as('adminLoginNetworkError')
+      break
+  }
 })
 
 // Custom command to mock API responses

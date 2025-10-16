@@ -1,6 +1,7 @@
 describe('Login Form Validation', () => {
   // Note: Tests use htmlFor attributes (#username, #password, #remember) instead of text content
   // This ensures tests remain stable even if UI labels change (e.g., "Username" → "Employee ID")
+  // Tests support both English and Portuguese languages via i18n
   beforeEach(() => {
     cy.visit('/login')
     cy.clearStorage()
@@ -158,6 +159,46 @@ describe('Login Form Validation', () => {
       cy.get('#remember').should('have.attr', 'id', 'remember')
     })
 
+  })
+
+  describe('Internationalization Support', () => {
+    it('should display English labels by default', () => {
+      cy.get('label[for="username"]').should('contain.text', 'Employee ID')
+      cy.get('label[for="password"]').should('contain.text', 'Password')
+      cy.get('label[for="remember"]').should('contain.text', 'Remember me')
+    })
+
+    it('should display Portuguese labels when language is changed', () => {
+      // Change language to Portuguese
+      cy.window().then((win) => {
+        win.localStorage.setItem('language', 'pt');
+      })
+      cy.reload()
+      
+      cy.get('label[for="username"]').should('contain.text', 'ID do Funcionário')
+      cy.get('label[for="password"]').should('contain.text', 'Senha')
+      cy.get('label[for="remember"]').should('contain.text', 'Lembrar de mim')
+    })
+
+    it('should show localized error messages in Portuguese', () => {
+      // Set language to Portuguese
+      cy.window().then((win) => {
+        win.localStorage.setItem('language', 'pt');
+      })
+      cy.reload()
+      
+      // Test empty field error
+      cy.get('#username').focus().blur()
+      cy.get('#username-error')
+        .should('be.visible')
+        .and('contain.text', 'ID do funcionário é obrigatório')
+      
+      // Test alphanumeric error
+      cy.get('#username').type('user@123').blur()
+      cy.get('#username-error')
+        .should('be.visible')
+        .and('contain.text', 'ID do funcionário deve conter apenas letras e números')
+    })
   })
 
   describe('Form Reset and Clear', () => {
