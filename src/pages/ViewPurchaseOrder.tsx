@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,8 +14,8 @@ export default function ViewPurchaseOrder() {
   const { toast } = useToast();
   
   const [filters, setFilters] = React.useState<FilterValues>({
-    city: 'Chennai',
-    facility: 'B2C_Chennai_FK_FC',
+    city: '',
+    facility: '',
     orderType: 'normal',
     vendor: '',
     date: new Date().toISOString()
@@ -25,15 +24,22 @@ export default function ViewPurchaseOrder() {
   const [searchSKU, setSearchSKU] = React.useState('');
   const [editOrder, setEditOrder] = React.useState<PurchaseOrder | null>(null);
   const [grnOrder, setGrnOrder] = React.useState<PurchaseOrder | null>(null);
+  const [purchaseOrders, setPurchaseOrders] = React.useState<PurchaseOrder[]>([]);
+  const [isLoading, setIsLoading] = React.useState(false);
 
-  const { data: purchaseOrders = [], isLoading, refetch } = useQuery({
-    queryKey: ['purchaseOrders', filters],
-    queryFn: () => fetchPurchaseOrders(filters),
-  });
-
-  const handleFetch = (newFilters: FilterValues) => {
+  const handleFetch = async (newFilters: FilterValues) => {
     setFilters(newFilters);
-    refetch();
+    setIsLoading(true);
+    
+    try {
+      const data = await fetchPurchaseOrders(newFilters);
+      setPurchaseOrders(data);
+    } catch (error) {
+      console.error('Error fetching purchase orders:', error);
+      setPurchaseOrders([]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleExportCSV = () => {
@@ -98,18 +104,13 @@ export default function ViewPurchaseOrder() {
         />
 
         {/* Data Table */}
-        {isLoading ? (
-          <div className="flex items-center justify-center h-64">
-            <div className="text-muted-foreground">{t('po.loading')}</div>
-          </div>
-        ) : (
-          <DataTable
-            data={purchaseOrders}
-            onEdit={setEditOrder}
-            onCreateGRN={setGrnOrder}
-            onPrint={handlePrint}
-          />
-        )}
+        <DataTable
+          data={purchaseOrders}
+          onEdit={setEditOrder}
+          onCreateGRN={setGrnOrder}
+          onPrint={handlePrint}
+          isLoading={isLoading}
+        />
       </main>
 
       {/* Modals */}

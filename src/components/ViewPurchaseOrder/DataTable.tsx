@@ -23,9 +23,10 @@ interface DataTableProps {
   onEdit: (po: PurchaseOrder) => void;
   onCreateGRN: (po: PurchaseOrder) => void;
   onPrint: (po: PurchaseOrder) => void;
+  isLoading?: boolean;
 }
 
-export function DataTable({ data, onEdit, onCreateGRN, onPrint }: DataTableProps) {
+export function DataTable({ data, onEdit, onCreateGRN, onPrint, isLoading = false }: DataTableProps) {
   const { t } = useTranslation();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [rowSelection, setRowSelection] = React.useState({});
@@ -155,7 +156,7 @@ export function DataTable({ data, onEdit, onCreateGRN, onPrint }: DataTableProps
   return (
     <div className="space-y-4">
       <div className="rounded-xl shadow-md overflow-hidden border">
-        <Table>
+        <Table data-cy="purchase-order-table">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -170,7 +171,16 @@ export function DataTable({ data, onEdit, onCreateGRN, onPrint }: DataTableProps
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={columns.length} className="h-24 text-center">
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+                    {t('po.loading')}
+                  </div>
+                </TableCell>
+              </TableRow>
+            ) : table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}

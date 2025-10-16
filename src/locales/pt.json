@@ -65,7 +65,20 @@
       "date": "Data e Hora",
       "searchVendor": "Pesquisar fornecedor...",
       "normalOrder": "Pedido Normal",
-      "urgentOrder": "Pedido Urgente"
+      "interfacilityOrder": "Pedido Interfacilidade",
+      "selectCity": "Selecionar uma cidade",
+      "loadingCities": "Carregando cidades...",
+      "errorLoadingCities": "Erro ao carregar cidades",
+      "noCitiesAvailable": "Nenhuma cidade disponível",
+      "searchCity": "Pesquisar cidades...",
+      "noCitiesFound": "Nenhuma cidade encontrada",
+      "selectFacility": "Selecionar uma instalação",
+      "loadingFacilities": "Carregando instalações...",
+      "errorLoadingFacilities": "Erro ao carregar instalações",
+      "noFacilitiesAvailable": "Nenhuma instalação disponível",
+      "noFacilitiesForCity": "Nenhuma instalação disponível para a cidade selecionada",
+      "searchFacility": "Pesquisar instalações...",
+      "noFacilitiesFound": "Nenhuma instalação encontrada"
     },
     "actions": {
       "fetch": "Buscar",

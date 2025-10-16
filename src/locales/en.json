@@ -65,7 +65,20 @@
       "date": "Date & Time",
       "searchVendor": "Search vendor...",
       "normalOrder": "Normal Order",
-      "urgentOrder": "Urgent Order"
+      "interfacilityOrder": "Interfacility Order",
+      "selectCity": "Select a city",
+      "loadingCities": "Loading cities...",
+      "errorLoadingCities": "Error loading cities",
+      "noCitiesAvailable": "No cities available",
+      "searchCity": "Search cities...",
+      "noCitiesFound": "No cities found",
+      "selectFacility": "Select a facility",
+      "loadingFacilities": "Loading facilities...",
+      "errorLoadingFacilities": "Error loading facilities",
+      "noFacilitiesAvailable": "No facilities available",
+      "noFacilitiesForCity": "No facilities available for selected city",
+      "searchFacility": "Search facilities...",
+      "noFacilitiesFound": "No facilities found"
     },
     "actions": {
       "fetch": "Fetch",
