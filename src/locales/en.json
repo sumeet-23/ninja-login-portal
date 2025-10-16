@@ -51,5 +51,73 @@
     "english": "English",
     "portuguese": "Portuguese",
     "selectLanguage": "Select Language"
+  },
+  "po": {
+    "title": "View Purchase Orders",
+    "searchSKU": "Search by SKU...",
+    "feedback": "Anonymous Feedback",
+    "loading": "Loading...",
+    "filters": {
+      "city": "City",
+      "facility": "Facility",
+      "orderType": "Order Type",
+      "vendor": "Vendor",
+      "date": "Date & Time",
+      "searchVendor": "Search vendor...",
+      "normalOrder": "Normal Order",
+      "urgentOrder": "Urgent Order"
+    },
+    "actions": {
+      "fetch": "Fetch",
+      "printPO": "Print PO",
+      "printGRN": "Print GRN",
+      "exportCSV": "Export CSV",
+      "generateInvoice": "Generate Invoice",
+      "acknowledgeCopy": "Acknowledge Copy",
+      "editOrder": "Edit Order",
+      "createGRN": "GRN",
+      "cancel": "Cancel",
+      "save": "Save",
+      "create": "Create"
+    },
+    "table": {
+      "rowNo": "No.",
+      "poId": "PO ID",
+      "vendorName": "Vendor Name",
+      "payment": "Payment",
+      "otherDetails": "Other Details",
+      "qtyTarget": "Qty Target",
+      "targetDelivery": "Target Delivery",
+      "createdTime": "Created Time",
+      "actions": "Actions",
+      "noResults": "No results found"
+    },
+    "status": {
+      "paid": "Paid",
+      "notPaid": "Not Paid",
+      "pending": "Pending"
+    },
+    "modal": {
+      "editOrder": "Edit Purchase Order",
+      "editOrderDesc": "Update details for",
+      "createGRN": "Create GRN",
+      "createGRNDesc": "Create Goods Receipt Note for",
+      "address": "Address",
+      "receivedQty": "Received Quantity",
+      "notes": "Notes",
+      "notesPlaceholder": "Add any notes..."
+    },
+    "toast": {
+      "orderUpdated": "Order Updated",
+      "orderUpdatedDesc": "Purchase order has been updated successfully",
+      "grnCreated": "GRN Created",
+      "grnCreatedDesc": "Goods Receipt Note has been created successfully",
+      "exportSuccess": "Export Successful",
+      "exportSuccessDesc": "CSV file has been downloaded",
+      "printInitiated": "Print Initiated",
+      "printInitiatedDesc": "Printing purchase order",
+      "actionInitiated": "Action Initiated",
+      "actionInitiatedDesc": "has been initiated"
+    }
   }
 }

@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import ViewPurchaseOrder from "./pages/ViewPurchaseOrder";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import "./i18n";
 
@@ -22,6 +23,7 @@ const App = () => (
         <Routes>
           <Route path="/login" element={<Index />} />
           <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/view-purchase-order" element={<ViewPurchaseOrder />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

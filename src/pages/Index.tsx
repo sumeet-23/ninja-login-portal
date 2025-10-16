@@ -7,9 +7,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { loginUser, ApiError, isOnline, handleOfflineError } from "@/lib/api";
 import { adminLoginApi, AdminRequest } from "@/lib/api/Admin";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -124,12 +126,13 @@ const Index = () => {
           rolesList: response.rolesList
         }));
         
-        // In production: redirect to dashboard or handle the response data
-        // window.location.href = '/dashboard';
-        console.log('Admin login response:', response);
-        
         // Log successful login
         console.log('✅ Admin login successful');
+        
+        // Redirect to View Purchase Order page
+        setTimeout(() => {
+          navigate('/view-purchase-order');
+        }, 1000);
       } else {
         console.error('Invalid response structure:', response);
         setMessage({ type: "error", text: t('messages.loginFailed') });

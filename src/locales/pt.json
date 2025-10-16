@@ -51,5 +51,73 @@
     "english": "Inglês",
     "portuguese": "Português",
     "selectLanguage": "Selecionar Idioma"
+  },
+  "po": {
+    "title": "Ver Ordens de Compra",
+    "searchSKU": "Pesquisar por SKU...",
+    "feedback": "Feedback Anônimo",
+    "loading": "Carregando...",
+    "filters": {
+      "city": "Cidade",
+      "facility": "Instalação",
+      "orderType": "Tipo de Pedido",
+      "vendor": "Fornecedor",
+      "date": "Data e Hora",
+      "searchVendor": "Pesquisar fornecedor...",
+      "normalOrder": "Pedido Normal",
+      "urgentOrder": "Pedido Urgente"
+    },
+    "actions": {
+      "fetch": "Buscar",
+      "printPO": "Imprimir PO",
+      "printGRN": "Imprimir GRN",
+      "exportCSV": "Exportar CSV",
+      "generateInvoice": "Gerar Fatura",
+      "acknowledgeCopy": "Cópia de Confirmação",
+      "editOrder": "Editar Pedido",
+      "createGRN": "GRN",
+      "cancel": "Cancelar",
+      "save": "Salvar",
+      "create": "Criar"
+    },
+    "table": {
+      "rowNo": "Nº",
+      "poId": "ID PO",
+      "vendorName": "Nome do Fornecedor",
+      "payment": "Pagamento",
+      "otherDetails": "Outros Detalhes",
+      "qtyTarget": "Qtd Alvo",
+      "targetDelivery": "Entrega Alvo",
+      "createdTime": "Hora de Criação",
+      "actions": "Ações",
+      "noResults": "Nenhum resultado encontrado"
+    },
+    "status": {
+      "paid": "Pago",
+      "notPaid": "Não Pago",
+      "pending": "Pendente"
+    },
+    "modal": {
+      "editOrder": "Editar Ordem de Compra",
+      "editOrderDesc": "Atualizar detalhes para",
+      "createGRN": "Criar GRN",
+      "createGRNDesc": "Criar Nota de Recebimento de Mercadorias para",
+      "address": "Endereço",
+      "receivedQty": "Quantidade Recebida",
+      "notes": "Notas",
+      "notesPlaceholder": "Adicionar notas..."
+    },
+    "toast": {
+      "orderUpdated": "Pedido Atualizado",
+      "orderUpdatedDesc": "Ordem de compra foi atualizada com sucesso",
+      "grnCreated": "GRN Criado",
+      "grnCreatedDesc": "Nota de Recebimento de Mercadorias foi criada com sucesso",
+      "exportSuccess": "Exportação Bem-sucedida",
+      "exportSuccessDesc": "Arquivo CSV foi baixado",
+      "printInitiated": "Impressão Iniciada",
+      "printInitiatedDesc": "Imprimindo ordem de compra",
+      "actionInitiated": "Ação Iniciada",
+      "actionInitiatedDesc": "foi iniciada"
+    }
   }
 }
